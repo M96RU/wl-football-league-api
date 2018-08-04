@@ -1,0 +1,26 @@
+variables:
+  DOCKER_IMAGE_NAME: registry.gitlab.worldline.tech/wl-football-league/wl-football-league-api:latest
+
+stages:
+  - package
+  - push
+
+package:
+  stage: package
+  image: registry.gitlab.worldline.tech/johann.vanackere/docker-maven-build-wl:latest
+  script:
+    - mvn -B package
+  artifacts:
+    name: api
+    paths:
+      - target/*.war
+
+push:
+  stage: push
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.worldline.tech
+  script:
+    - docker build --pull -t $DOCKER_IMAGE_NAME .
+    - docker push $DOCKER_IMAGE_NAME
+  only:
+    - master

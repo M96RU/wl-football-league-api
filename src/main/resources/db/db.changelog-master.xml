@@ -1,0 +1,232 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="idType" value="BIGINT(19)"/>
+    <property name="legacyIdType" value="int(10) UNSIGNED"/>
+
+    <changeSet id="GameUserResult-createTable" author="a131199">
+        <createTable tableName="GameUserResult">
+            <column name="id" autoIncrement="true" type="${idType}">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="game_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_matches"
+                             references="matches(PK)" nullable="false"/>
+            </column>
+            <column name="user_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_user"
+                             references="user(PK)" nullable="false"/>
+            </column>
+            <column name="userTeam_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_team"
+                             references="team(PK)" nullable="false"/>
+            </column>
+            <column name="against_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_against"
+                             references="user(PK)" nullable="false"/>
+            </column>
+            <column name="againstTeam_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_againstTeam"
+                             references="team(PK)" nullable="false"/>
+            </column>
+            <column name="season_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_GameUserResult_season"
+                             references="season(PK)" nullable="false"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="compet" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cupRound" type="INTEGER"/>
+            <column name="leagueDay" type="INTEGER"/>
+            <column name="division" type="INTEGER"/>
+            <column name="outcome" type="VARCHAR(10)"/>
+            <column name="win" type="boolean"/>
+            <column name="lose" type="boolean"/>
+            <column name="draw" type="boolean"/>
+            <column name="goalsFor" type="INTEGER"/>
+            <column name="goalsAgainst" type="INTEGER"/>
+            <column name="regulationTimeFor" type="INTEGER"/>
+            <column name="regulationTimeAgainst" type="INTEGER"/>
+            <column name="overtimeFor" type="INTEGER"/>
+            <column name="overtimeAgainst" type="INTEGER"/>
+            <column name="tabFor" type="INTEGER"/>
+            <column name="tabAgainst" type="INTEGER"/>
+            <column name="goalAverage" type="INTEGER"/>
+            <column name="winRegulationTime" type="boolean"/>
+            <column name="winOvertime" type="boolean"/>
+            <column name="winTab" type="boolean"/>
+            <column name="loseRegulationTime" type="boolean"/>
+            <column name="loseOvertime" type="boolean"/>
+            <column name="loseTab" type="boolean"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="userseason-addCupInProgress" author="a131199">
+        <addColumn tableName="userseason">
+            <column name="POTENTIAL_POINTS" type="INTEGER" defaultValueNumeric="0" afterColumn="POINTS"/>
+            <column name="LEAGUE_WINNER" type="boolean" defaultValueBoolean="false" afterColumn="POTENTIAL_POINTS"/>
+            <column name="CUP_IN_PROGRESS" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="Baton-createTable" author="a131199">
+        <dropTable tableName="batonmatches"/>
+        <dropTable tableName="baton"/>
+        <createTable tableName="Baton">
+            <column name="id" autoIncrement="true" type="${idType}">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_Baton_user"
+                             references="user(PK)" nullable="false"/>
+            </column>
+            <column name="lostAgainst_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_Baton_lostAgainst"
+                             references="user(PK)" nullable="true"/>
+            </column>
+            <column name="wonGame_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_Baton_wonGame"
+                             references="matches(PK)" nullable="true"/>
+            </column>
+            <column name="lostGame_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_Baton_lostGame"
+                             references="matches(PK)" nullable="true"/>
+            </column>
+            <column name="wonDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lostDate" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="sinceGames" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="forced" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="Baton">
+            <column name="user_PK" valueNumeric="13"/>
+            <column name="forced" valueBoolean="true"/>
+            <column name="wonDate" valueDate="2016-01-11T12:30:00"/>
+        </insert>
+        <insert tableName="Baton">
+            <column name="user_PK" valueNumeric="13"/>
+            <column name="forced" valueBoolean="true"/>
+            <column name="wonDate" valueDate="2016-06-13T14:10:00"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="user-addAdmin" author="a131199">
+        <addColumn tableName="user">
+            <column name="admin" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+        <update tableName="user">
+            <column name="admin" valueBoolean="true"/>
+            <where>das = 'A131199'</where>
+        </update>
+        <update tableName="user">
+            <column name="admin" valueBoolean="true"/>
+            <where>das = 'A171090'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="matches-addVersion" author="a131199">
+        <addColumn tableName="matches">
+            <column name="version" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="Timeslot-createTable" author="a131199">
+        <createTable tableName="Timeslot">
+            <column name="id" autoIncrement="true" type="${idType}">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false" unique="true" uniqueConstraintName="UC_Timeslot_date"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="UserAvailability-createTable" author="a131199">
+        <createTable tableName="UserAvailability">
+            <column name="id" autoIncrement="true" type="${idType}">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_PK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_UserAvailability_user"
+                             references="user(PK)" nullable="false"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="UserAvailability" columnNames="user_PK,date" constraintName="UC_UserAvailability_user_date"/>
+    </changeSet>
+
+    <changeSet id="user-addEmail" author="a131199">
+        <addColumn tableName="user">
+            <column name="email" type="VARCHAR(255)"/>
+        </addColumn>
+        <sql>
+            UPDATE user SET email = CONCAT(LOWER(FN), '.', LOWER(LN), '@worldline.com');
+        </sql>
+    </changeSet>
+    
+   	<changeSet author="a171090" id="season5-teams">
+		<insert tableName="team">
+			<column name="PK">50</column>
+			<column name="LABEL">Bordeaux</column>
+		</insert>
+		<insert tableName="user">
+			<column name="PK">38</column>
+			<column name="DAS">A182019</column>
+			<column name="FN">Bertrand</column>
+			<column name="LN">RANNOU</column>
+			<column name="email">bertrand.rannou@equensworldline.com</column>
+		</insert>
+	</changeSet>
+
+    <changeSet id="userseason-addChoice" author="a171090">
+        <addColumn tableName="userseason">
+            <column name="CHOICE" type="INTEGER" defaultValueNumeric="0" afterColumn="DIVISION"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="TeamSeason-createTable" author="a171090">
+        <createTable tableName="teamseason">
+            <column name="PK" autoIncrement="true" type="${idType}">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="TEAM_FK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_TeamSeason_team"
+                             references="team(PK)" nullable="false"/>
+            </column>
+            <column name="SEASON_FK" type="${legacyIdType}">
+                <constraints foreignKeyName="FK_TeamSeason_season"
+                             references="season(PK)" nullable="false"/>
+            </column>
+            <column name="DIVISION" type="INTEGER"/>
+            <column name="ATTACK" type="INTEGER"/>
+            <column name="MIDFIELD" type="INTEGER"/>
+            <column name="DEFENCE" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="a171090" id="season6-teams">
+      <insert tableName="team">
+        <column name="PK">51</column>
+        <column name="LABEL">RC Strasbourg</column>
+      </insert>
+    </changeSet>
+
+</databaseChangeLog>

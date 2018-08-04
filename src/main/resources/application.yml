@@ -1,0 +1,51 @@
+spring:
+  jackson.serialization.write_dates_as_timestamps: false
+  data.rest.default-page-size: 500
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PW}
+    driver-class-name: ${DB_DRIVER}
+    test-on-borrow: true
+    test-while-idle: true
+    validation-query: SELECT 1;
+  mail:
+    host: ${MAIL_HOST}
+  liquibase.change-log: classpath:/db/db.changelog-master.xml
+
+spring.jpa.hibernate:
+  naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  use-new-id-generator-mappings: false
+
+gu.web.cas:
+  enabled: true
+  siteUrl: ${app.siteUrl}
+  casBaseUrl: https://portal.itsm.atosworldline.com
+  casLoginPath: /login
+gu.web.ignoredPaths:
+   - /h2-console/**
+   - /configprops/**
+   - /manager/**
+
+app:
+  emailFrom: no-reply@wl-football-league.com
+  emailDestOverride: ${MAIL_DEST:}
+  siteUrl: ${SITE_URL}
+  calendarDomain: wl-football-league
+
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/wlceligue?autoReconnect=true&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  mail:
+    host: relay-smtp.priv.atos.fr
+
+app:
+  emailFrom: local@wl-football-league.com
+  emailDestOverride: johann.vanackere@equensworldline.com
+  siteUrl: http://localhost:4200
+  calendarDomain: wl-football-league-local
