@@ -17,21 +17,18 @@ import wlceligue.admin.webapp.model.search.TimeslotSearchBean
 class TimeslotResource(val jpqlQueryFactory: JPQLQueryFactory, val timeslotRepo: TimeslotRepo) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun search(searchBean: TimeslotSearchBean): Page<Timeslot> {
         return searchBean.find(jpqlQueryFactory)
     }
 
     @PostMapping
     @Transactional
-    @Secured("ROLE_USER")
     fun save(@RequestBody timeslot: Timeslot): Timeslot {
         return timeslotRepo.save(timeslot)
     }
 
     @DeleteMapping("{id}")
     @Transactional
-    @Secured("ROLE_USER")
     fun delete(@PathVariable id: Long) {
         timeslotRepo.deleteById(id)
     }

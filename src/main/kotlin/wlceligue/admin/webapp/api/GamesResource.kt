@@ -40,13 +40,11 @@ class GamesResource(val jpqlQueryFactory: JPQLQueryFactory,
                          val calendarService: CalendarService) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun findGames(gameSearchBean: GameSearchBean, page: Pageable?): Page<Match> {
         return gameSearchBean.find(jpqlQueryFactory, page)
     }
 
     @GetMapping("{id}")
-    @Secured("ROLE_USER")
     fun get(@PathVariable("id") id: Int): Match {
         return jpqlQueryFactory.selectFrom(QMatch.match).where(QMatch.match.id.eq(id)).fetchOne()
     }
@@ -83,7 +81,6 @@ class GamesResource(val jpqlQueryFactory: JPQLQueryFactory,
     }
 
     @PostMapping("/cupgenerate")
-    @Secured("ROLE_USER")
     fun generateCup(@RequestParam season: Int) {
         val dbSeason = seasonRepo.findById(season).orElseThrow { IllegalArgumentException("No season found with id $season") }
         matchGenerationService.generateCup(dbSeason)

@@ -25,13 +25,11 @@ import javax.servlet.http.HttpServletRequest
 class UserSeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val userSeasonService: UserSeasonService, val userSeasonRepo: UserSeasonRepo, val teamRepo: TeamRepo, val matchService: MatchService) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun find(userSeasonSearchBean: UserSeasonSearchBean, page: Pageable?): Page<UserSeason> {
         return userSeasonSearchBean.find(jpqlQueryFactory, page)
     }
 
     @GetMapping("{id}")
-    @Secured("ROLE_USER")
     fun get(@PathVariable("id") id: Int): UserSeason {
         return jpqlQueryFactory.selectFrom(QUserSeason.userSeason).where(QUserSeason.userSeason.id.eq(id)).fetchOne()
     }

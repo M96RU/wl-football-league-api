@@ -2,7 +2,6 @@ package wlceligue.admin.webapp.api
 
 import com.querydsl.jpa.JPQLQueryFactory
 import org.springframework.data.domain.Page
-import org.springframework.security.access.annotation.Secured
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import wlceligue.admin.webapp.model.jpa.QUserAvailability
@@ -26,7 +25,6 @@ class UserAvailabilityResource(val jpqlQueryFactory: JPQLQueryFactory, val userA
 
     @PostMapping("{date}/{userId}")
     @Transactional
-    @Secured("ROLE_USER")
     fun declaredAvailable(@PathVariable userId: Int, @PathVariable date: Instant): UserAvailability {
         val availability = UserAvailability()
         availability.date = date
@@ -36,7 +34,6 @@ class UserAvailabilityResource(val jpqlQueryFactory: JPQLQueryFactory, val userA
 
     @DeleteMapping("{date}/{userId}")
     @Transactional
-    @Secured("ROLE_USER")
     fun removeAvailable(@PathVariable userId: Int, @PathVariable date: Instant): UserAvailability? {
         val availability = jpqlQueryFactory.selectFrom(QUserAvailability.userAvailability)
                 .where(QUserAvailability.userAvailability.user.id.eq(userId))

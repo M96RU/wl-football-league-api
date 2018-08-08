@@ -3,7 +3,6 @@ package wlceligue.admin.webapp.api
 import com.querydsl.jpa.JPQLQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,19 +20,16 @@ import wlceligue.admin.webapp.service.BatonService
 class BatonsResource(val jpqlQueryFactory: JPQLQueryFactory, val batonService: BatonService) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun find(batonSearchBean: BatonSearchBean, page: Pageable?): Page<Baton> {
         return batonSearchBean.find(jpqlQueryFactory, page)
     }
 
     @GetMapping("/current")
-    @Secured("ROLE_USER")
     fun current(): Baton? {
         return batonService.getCurrentBaton()
     }
 
     @GetMapping("/{id}/games")
-    @Secured("ROLE_USER")
     fun batonGames(@PathVariable id: Long): List<Match> {
 
         val baton = jpqlQueryFactory.selectFrom(QBaton.baton).where(QBaton.baton.id.eq(id)).fetchOne()

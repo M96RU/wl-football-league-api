@@ -20,7 +20,6 @@ import wlceligue.admin.webapp.service.team.TeamSeasonUpdate
 open class TeamSeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val teamSeasonService: TeamSeasonService) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     open fun find(teamSeasonSearchBean: TeamSeasonSearchBean, page: Pageable?): Page<TeamSeason> {
         return teamSeasonSearchBean.find(jpqlQueryFactory, page)
     }
@@ -32,7 +31,6 @@ open class TeamSeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val teamS
     }
 
     @GetMapping("{id}")
-    @Secured("ROLE_USER")
     fun get(@PathVariable("id") id: Int): TeamSeason {
         return jpqlQueryFactory.selectFrom(QTeamSeason.teamSeason).where(QTeamSeason.teamSeason.id.eq(id)).fetchOne()
     }

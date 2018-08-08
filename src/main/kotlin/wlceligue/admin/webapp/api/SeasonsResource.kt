@@ -18,7 +18,6 @@ import wlceligue.admin.webapp.service.SeasonService
 class SeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val seasonRepo: SeasonRepo, val seasonService: SeasonService, val cupService: CupService) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun find(seasonSearchBean: SeasonSearchBean, page: Pageable?): Page<Season> {
         return seasonSearchBean.find(jpqlQueryFactory, page)
     }
@@ -30,13 +29,11 @@ class SeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val seasonRepo: Se
     }
 
     @GetMapping("{id}")
-    @Secured("ROLE_USER")
     fun get(@PathVariable("id") id: Int): Season {
         return jpqlQueryFactory.selectFrom(QSeason.season).where(QSeason.season.id.eq(id)).fetchOne()
     }
 
     @GetMapping("{id}/league/{division}/ranking")
-    @Secured("ROLE_USER")
     fun ranking(@PathVariable("id") id: Int, @PathVariable division: Int): List<UserSeason> {
         return jpqlQueryFactory.selectFrom(QUserSeason.userSeason)
                 .where(QUserSeason.userSeason.season.id.eq(id))
@@ -46,7 +43,6 @@ class SeasonsResource(val jpqlQueryFactory: JPQLQueryFactory, val seasonRepo: Se
     }
 
     @PostMapping("{id}/cup/draw")
-    @Secured("ROLE_USER")
     fun cupDraw(@PathVariable("id") id: Int, @RequestBody draw: CupDraw): Match {
         val season = get(id)
         return cupService.cupDraw(season, draw)

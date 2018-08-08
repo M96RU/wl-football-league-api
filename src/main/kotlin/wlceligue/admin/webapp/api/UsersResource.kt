@@ -5,7 +5,6 @@ import org.jasig.cas.client.util.CommonUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.cas.ServiceProperties
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint
 import org.springframework.security.core.userdetails.UserDetails
@@ -34,13 +33,11 @@ class UsersResource(val jpqlQueryFactory: JPQLQueryFactory, val userSerieService
                     val casAuthenticationEntryPoint: CasAuthenticationEntryPoint) {
 
     @GetMapping
-    @Secured("ROLE_USER")
     fun find(userSearchBean: UserSearchBean, page: Pageable?): Page<User> {
         return userSearchBean.find(jpqlQueryFactory, page)
     }
 
     @PostMapping
-    @Secured("ROLE_USER")
     fun create(@RequestBody userCreate: UserCreate): User {
         val user = User().apply {
             das = userCreate.das ?: throw IllegalStateException("Das is missing!")
@@ -52,13 +49,11 @@ class UsersResource(val jpqlQueryFactory: JPQLQueryFactory, val userSerieService
     }
 
     @GetMapping("{id}")
-    @Secured("ROLE_USER")
     fun get(@PathVariable("id") id: Int): User {
         return jpqlQueryFactory.selectFrom(QUser.user).where(QUser.user.id.eq(id)).fetchOne()
     }
 
     @GetMapping("{id}/stats")
-    @Secured("ROLE_USER")
     fun getStatistics(@PathVariable("id") id: Int, gameSearchBean: GameUserResultSearchBean): UserStats {
         return userStatsService.getStatistics(id, gameSearchBean)
     }
@@ -86,13 +81,11 @@ class UsersResource(val jpqlQueryFactory: JPQLQueryFactory, val userSerieService
     }
 
     @GetMapping("/series")
-    @Secured("ROLE_USER")
     fun getUserSeries(gameSearchBean: GameSearchBean): List<UserSerie> {
         return userSerieService.getUserSerieResponse(gameSearchBean)
     }
 
     @GetMapping("/series/{id}")
-    @Secured("ROLE_USER")
     fun getUserSeries(@PathVariable("id") id: Int, gameSearchBean: GameSearchBean): UserSerie {
         return userSerieService.getUserSerie(userRepo.findById(id).orElseThrow { IllegalArgumentException("No user found with id $id") }, gameSearchBean)
     }
