@@ -1,6 +1,11 @@
 FROM centos:7
 MAINTAINER "Manuel RUSSO <manuelrusso@laposte.net>"
 
+# Setting French timezone
+RUN rm /etc/localtime
+RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
+RUN date
+
 # Install Java
 RUN yum install -y java-1.8.0-openjdk-devel
 RUN java -version
